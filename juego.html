@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Primer Juego</title>
+    <style>
+        body { text-align: center; background: #222; color: white; 
+font-family: sans-serif; }
+        canvas { background: #111; display: block; margin: 20px auto; 
+border: 4px solid #fff; }
+    </style>
+</head>
+<body>
+    <h1>¡Mi primer juego!</h1>
+    <p>Usa las FLECHAS Izquierda / Derecha para esquivar el bloque 
+rojo.</p>
+    <canvas id="pantalla" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById("pantalla");
+        const ctx = canvas.getContext("2d");
+        let jugadorX = 180;
+        const jugadorY = 350;
+        const jugadorAncho = 40;
+        let enemigoX = Math.random() * 360;
+        let enemigoY = 0;
+        const enemigoTamano = 40;
+        let velocidadEnemigo = 4;
+        let puntos = 0;
+        let teclaIzquierda = false;
+        let teclaDerecha = false;
+        document.addEventListener("keydown", (e) => {
+            if(e.key === "ArrowLeft") teclaIzquierda = true;
+            if(e.key === "ArrowRight") teclaDerecha = true;
+        });
+        document.addEventListener("keyup", (e) => {
+            if(e.key === "ArrowLeft") teclaIzquierda = false;
+            if(e.key === "ArrowRight") teclaDerecha = false;
+        });
+        function actualizar() {
+            if(teclaIzquierda && jugadorX > 0) jugadorX -= 5;
+            if(teclaDerecha && jugadorX < canvas.width - jugadorAncho) 
+jugadorX += 5;
+            enemigoY += velocidadEnemigo;
+            if(enemigoY > canvas.height) {
+                enemigoY = 0;
+                enemigoX = Math.random() * (canvas.width - enemigoTamano);
+                puntos++;
+                velocidadEnemigo += 0.5;
+            }
+            if(enemigoY + enemigoTamano > jugadorY && enemigoX < jugadorX 
++ jugadorAncho && enemigoX + enemigoTamano > jugadorX) {
+                alert("¡Perdiste! Puntos: " + puntos);
+                enemigoY = 0;
+                enemigoX = Math.random() * 360;
+                puntos = 0;
+                velocidadEnemigo = 4;
+                jugadorX = 180;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00a8ff";
+            ctx.fillRect(jugadorX, jugadorY, jugadorAncho, jugadorAncho);
+            ctx.fillStyle = "#ff4757";
+            ctx.fillRect(enemigoX, enemigoY, enemigoTamano, 
+enemigoTamano);
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.fillText("Puntos: " + puntos, 10, 30);
+            requestAnimationFrame(actualizar);
+        }
+        actualizar();
+    </script>
+</body>
+</html>
